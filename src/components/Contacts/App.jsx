@@ -53,13 +53,26 @@ export default class App extends Component {
     this.setState({ filter: evt.target.value });
   };
 
+  componentDidMount() {
+    const contacts = localStorage.getItem("contacts");
+    if (contacts) {
+      this.setState({ contacts: JSON.parse(contacts) });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
+    }
+  }
+
   render() {
     const { filter } = this.state;
     const contacts = this.getFilteredContacts();
     return (
       <div>
         <h1>Phonebook</h1>
-        <ContactForm onSubmit={ this.addContact} />
+        <ContactForm onSubmit={this.addContact} />
         <h2>Contacts</h2>
         <Filter value={filter} onChange={this.handleChangeFilter} />
         <ContactList contacts={contacts} deleteContact={this.deleteContact} />
